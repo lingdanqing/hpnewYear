@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024龙运连绵</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #newYearMessage {
+            font-size: 36px;
+            color: rgb(238, 37, 37);
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0066ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff0055;
+        }
+
+        /* +1 红色提示动画 */
+        .plus-one {
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            color: red;
+            font-weight: bold;
+            opacity: 0;
+            animation: showPlusOne 1s ease forwards;
+        }
+
+        @keyframes showPlusOne {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="confettiCanvas"></canvas>
+    <div id="newYearMessage"></div>
+    <button onclick="restartAnimation()">领取好运</button>
+
+    <script>
+        // Confetti 动画
+        var confettiCanvas = document.getElementById("confettiCanvas");
+        var ctx = confettiCanvas.getContext("2d");
+        var pieces = [];
+        var numberOfPieces = 200;
+
+        resizeCanvas();
+
+        window.addEventListener("resize", function () {
+            resizeCanvas();
+        });
+
+        function resizeCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function Piece() {
+            this.x = confettiCanvas.width * Math.random();
+            this.y = confettiCanvas.height * Math.random() - confettiCanvas.height;
+            this.rotation = Math.random() * 2 * Math.PI;
+            this.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+            this.radius = 5 * Math.random() + 5;
+            this.speed = (3 * Math.random()) + 1;
+            this.opacity = Math.random();
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            pieces.forEach(function (piece) {
+                piece.y += piece.speed;
+                piece.rotation += 0.1;
+
+                ctx.beginPath();
+                ctx.arc(piece.x, piece.y, piece.radius, piece.rotation, piece.rotation + Math.PI, false);
+                ctx.fillStyle = piece.color;
+                ctx.globalAlpha = piece.opacity;
+                ctx.fill();
+
+                if (piece.y >= confettiCanvas.height) {
+                    piece.y = -piece.radius;
+                }
+            });
+            requestAnimationFrame(update);
+        }
+
+        function createConfetti() {
+            for (var i = 0; i < numberOfPieces; i++) {
+                pieces.push(new Piece());
+            }
+            update();
+        }
+
+        createConfetti();
+
+        // 互动新年祝福消息
+        var newYearMessage = document.getElementById("newYearMessage");
+        var currentYear = new Date().getFullYear();
+        var newYear = 2024;
+
+        function displayMessage() {
+            if (currentYear > newYear) {
+                newYearMessage.innerText = "2024年已经过去了，祝您" + (currentYear + 1) + "年新年快乐!";
+            } else {
+                var daysLeft = Math.ceil((new Date("January 1, " + newYear + " 00:00:00") - new Date()) / (1000 * 60 * 60 * 24));
+                newYearMessage.innerText = "祝您新年快乐!";
+            }
+        }
+
+        displayMessage();
+
+        
+
+        // 添加祝福语掉落
+        var blessings = [
+                "祝您新年快乐!",
+                "万事如意!",
+                "财源滚滚!",
+                "心想事成!",
+                "生3个大胖小子!",
+                "好运连连!",
+                "事业蒸蒸日上!",
+                "身体健康!",
+                "家庭幸福!",
+                "快乐无边!",
+                "笑口常开!",
+                "心想事成!",
+                "永远年轻!",
+                "心想事成!",
+                "万事顺心!",
+                "爱情甜蜜!",
+                "事业有成!",
+                "家庭和睦!",
+                "好运连连!",
+                "梦想成真!",
+                "美梦成真!",
+                "永远快乐!",
+                "事业腾飞!",
+                "一帆风顺!",
+                "心想事成!",
+                "幸福安康!",
+                "财源滚滚!",
+                "学业有成!",
+                "欢乐无限!"
+            ];
+
+
+        function dropBlessings() {
+            var index = 0;
+            var interval = setInterval(function () {
+                if (index < blessings.length) {
+                    var blessing = blessings[index];
+                    var x = Math.random() * (confettiCanvas.width - 200) + 0;
+                    var y = -50;
+                    var color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+                    var fontSize = Math.random() * 24 + 16;
+
+                    var span = document.createElement('span');
+                    span.style.position = 'absolute';
+                    span.style.left = x + 'px';
+                    span.style.top = y + 'px';
+                    span.style.color = color;
+                    span.style.fontSize = fontSize + 'px';
+                    span.style.cursor = 'pointer';
+                    span.innerText = blessing;
+                    span.onclick = function () {
+                        span.style.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+
+                        // 添加 +1 提示
+                        var plusOne = document.createElement('div');
+                        plusOne.classList.add('plus-one');
+                        plusOne.innerText = '+1';
+                        span.appendChild(plusOne);
+                        setTimeout(function () {
+                            span.removeChild(plusOne);
+                        }, 1000);
+                    };
+
+                    document.body.appendChild(span);
+
+                    var animationInterval = setInterval(function () {
+                        y += 2;
+                        span.style.top = y + 'px';
+
+                        if (y > confettiCanvas.height) {
+                            clearInterval(animationInterval);
+                            document.body.removeChild(span);
+                        }
+                    }, 30);
+                } else {
+                    clearInterval(interval);
+                }
+
+                index++;
+            }, 1000);
+        }
+
+        // dropBlessings();
+
+        // 自动循环执行dropBlessings()
+        // 重新开始动画
+            function restartAnimation() {
+                // pieces = [];
+                // createConfetti();
+                // setInterval(dropBlessings, 10000); // 5000毫秒（5秒）执行一次
+                dropBlessings()
+            }
+    </script>
+</body>
+
+</html>
